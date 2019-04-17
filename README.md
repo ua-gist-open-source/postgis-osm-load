@@ -9,7 +9,9 @@ GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.2572235
 
 This is EPSG:4326.
 
-The command to load this data into PostGIS is called shp2psql.
+The command to load this data into PostGIS is called shp2psql. It should already be installed as part of the PostGIS bundle. It is a command that takes a shapefile and turns into the PostgreSQL variant of SQL. When you run it you
+you will provide the name of a shapefile. By default the output will be printed to your screen (aka `STDOUT`)
+but you want to redirect the output to a file. 
 
 
 ```
@@ -21,24 +23,8 @@ This creates a SQL file that you can use to load the data into postgresql. Loadi
 
 
 ```
-psql -d gist604b -h localhost -U postgres -f gis_osm_places_free_1.sql
+psql -d arizona -h localhost -U postgres -f gis_osm_places_free_1.sql
 ```
-
-
-There are a lot of files to work with so let’s use this script to run them all in one go:
-
-
-```
-for /F %i in ('dir /B *.shp') do shp2pgsql -s 4326 %i %~ni > %~ni.sql
-```
-
-
-
-
-<p id="gdcalert16" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/GIST-604B15.png). Store image on your image server and adjust path/filename if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert17">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/GIST-604B15.png "image_tooltip")
 
 
 
@@ -62,7 +48,7 @@ Next, batch create the tables from the .sql files:
 ```
 set PGPASSWORD=postgres
 
-for /F %i in ('dir /B *.sql') do psql -d gist604b -h localhost -U postgres -f %i
+psql -d arizona -h localhost -U postgres -f %i
 ```
 
 
@@ -93,7 +79,7 @@ Use it with psql to run it from the command line:
 
 
 ```
-psql -d gist604b -h localhost -U postgres -c "ALTER TABLE gs_osm_buildings_a_free_1 RENAME TO buildings;
+psql -d arizona -h localhost -U postgres -c "ALTER TABLE gs_osm_buildings_a_free_1 RENAME TO buildings;
 ```
 
 
@@ -101,6 +87,8 @@ Do this for all the OSM layers. I didn’t do it for the rest of this tutorial b
 
 
 ### Open PostGIS Tables as Layers in QGIS and Style
+View in QGIS
+Open GGIS and select the “Layer -> Add PostGIS Layers” option. 
 
 
 #### 
