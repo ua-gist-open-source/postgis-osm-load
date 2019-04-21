@@ -30,6 +30,27 @@ Unzip and take note of the projection:
 
 This is `EPSG:4326`.
 
+### Create an `arizona` database
+Create a database for the OSM Data. You can do this through pgadmin but to make things more deterministic, type the following in a command window:
+
+```psql -d arizona -c "create database arizona"```
+
+You will be prompted for your password each time. To avoid being asked repeatedly, type the following command to store
+your password in your local shell environment, replacing `postgres` with the password you selected (if you did) for your
+PostgreSQL installation.
+
+```
+set PGPASSWORD=postgres
+```
+
+Note that if you close the window you will lose that environment. Thus, if you close and re-open a command window you will
+need to re-issue the above command if you want to avoid being asked for the password every time you run a `psql` command. Savvy users can save this as a USER environment variable and not have to be asked again.
+
+Next, enable the `PostGIS` extension:
+
+```psql -d arizona -c "create extension postgis"```
+
+
 ### Extract the OSM data and load it into postgresql
 
 The command to load this data into PostGIS is called `shp2psql`. It should already be installed as part of the PostGIS bundle. It is a command that takes a shapefile and turns into the PostgreSQL variant of SQL. When you run it you
@@ -37,7 +58,6 @@ you will provide the name of a shapefile. By default the output will be printed 
 but you want to redirect the output to a file. 
 
 Open a Unix shell or DOS command window and navigate to the directory where you unzipped the arizona 
-
 
 ```
 shp2pgsql -s 4326 gis_osm_places_free_1 > gis_osm_places_free_1.sql
@@ -50,16 +70,6 @@ psql -d arizona -h localhost -U postgres -f gis_osm_places_free_1.sql
 ```
 
 The above two commands will create and populate a table for `places` based on OSM data. 
-
-You will be prompted for your password each time. To avoid being asked repeatedly, type the following command to store
-your password in your local shell environment, replacing `postgres` with the password you selected (if you did) for your
-PostgreSQL installation.
-
-```
-set PGPASSWORD=postgres
-```
-Note that if you close the window you will lose that environment. Thus, if you close and re-open a command window you will
-need to re-issue the above command if you want to avoid being asked for the password every time you run a `psql` command. Savvy users can save this as a USER environment variable and not have to be asked again.
 
 Repeat the steps for the additional data files. Refresh your pgadmin table list to see that the tables were created.
 
