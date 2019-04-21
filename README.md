@@ -87,3 +87,11 @@ Do this for all the OSM layers. I didn’t do it for the rest of this tutorial b
 View in QGIS
 Open GGIS and select the “Layer -> Add PostGIS Layers” option. 
 Open all the OSM Arizona layers. Take a screenshot and save it to your github `osm` branch with the name `osm_qgis_screenshot.png`
+
+### Deliverables:
+The following two files in a branch named `osm`, submitted as a Pull Request to be merged with master:
+1) File named `import.cmd` containing:
+- all commands used to extract shapefile data into sql files (i.e., `shp2pgsql...`)
+- all commands used to import sql files into postgresql (i.e., `psql...`)
+- all commands used to rename tables (i.e., `psql.... ALTER TABLE...`)
+2) Screenshot named `osm_qgis_screenshot.png` showing all OSM PostGIS tables visible in QGIS, zoomed into Tucson
