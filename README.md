@@ -90,16 +90,17 @@ Use it with psql to run it from the command line:
 
 
 ```
-psql -d arizona -h localhost -U postgres -c "ALTER TABLE gs_osm_buildings_a_free_1 RENAME TO buildings;
+psql -d arizona -h localhost -U postgres -c "ALTER TABLE gis_osm_buildings_a_free_1 RENAME TO buildings;
 ```
 
 
-Do this for all the OSM layers. I didn’t do it for the rest of this tutorial but it will make things a lot easier for you.
+Do this for all the OSM layers. Tables containing `_a_` in them refer to polygons; hence some feature classes are 
+represented both as points (e.g., `places`) and polygons (e.g., `places_a`). 
 
+*Note: `natural` is a postgresql reserved word do rename `gis_osm_natural_free_1` to `nature`*
 
 ### Open PostGIS Tables as Layers in QGIS
-View in QGIS
-Open GGIS and select the “Layer -> Add PostGIS Layers” option. 
+Open GGIS and select the `Layer` -> `Add PostGIS Layers` option. 
 Open all the OSM Arizona layers. Take a screenshot and save it to your github `osm` branch with the name `osm_qgis_screenshot.png`
 
 ### Deliverables:
