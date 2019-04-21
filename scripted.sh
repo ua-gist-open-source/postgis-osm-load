@@ -23,6 +23,11 @@ for f in $(ls *.shp|sed 's/.shp$//'); do
 done
 
 # Rename tables
-for f in $(ls *.sql | sed 's/^gis_osm_//' | sed 's/_free.*//'); do 
-  psql -d ${STATE} -h localhost -U ${USER} -c "ALTER TABLE gs_osm_${tab}_free_1 RENAME TO ${tab};" 
+for tab in $(ls *.sql | sed 's/^gis_osm_//' | sed 's/_free.*//'); do 
+  OLD_NAME=gis_osm_${tab}_free_1
+  if [[ $tab = "natural" ]]; then
+    NEW_NAME="nature"
+  else
+    NEW_NAME=$tab
+  psql -d ${STATE} -h localhost -U ${USER} -c "ALTER TABLE $OLD_NAME RENAME TO ${NEW_NAME};" 
 done
