@@ -68,10 +68,14 @@ This creates a SQL file that you can use to load the data into postgresql. Loadi
 ```
 psql -d arizona -h localhost -U postgres -f gis_osm_places_free_1.sql
 ```
+A successful run will result in a large number of lines with nothing else but 
+```
+INSERT 0 1
+```
 
 The above two commands will create and populate a table for `places` based on OSM data. 
 
-Repeat the steps for the additional data files. Refresh your pgadmin table list to see that the tables were created.
+Repeat the steps for the additional data files. Refresh your pgadmin table list to see that the tables were created. It can take a few minutes for the larger tables but sould not take longer than 15 minutes total.
 
 ### Rename the tables
 The names are pretty obnoxious since they all start with the same 8 characters. To change a table name in SQL: 
