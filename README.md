@@ -1,5 +1,5 @@
 # Assignment: PostGIS II - OSM Data Load - PostGIS
-## Worth: 40 points
+## Worth: 60 points
 ## Due: Saturday, April 27, 11:59pm
 
 ## Background
