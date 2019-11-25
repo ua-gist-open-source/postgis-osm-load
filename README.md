@@ -133,3 +133,5 @@ The following two files in a branch named `osm`, submitted as a Pull Request to 
 - all commands used to import sql files into postgresql (i.e., `psql...`)
 - all commands used to rename tables (i.e., `psql.... ALTER TABLE...`)
 2) Screenshot named `osm_qgis_screenshot.png` showing all OSM PostGIS tables visible in QGIS, zoomed into Tucson
+
+[![DOI](https://zenodo.org/badge/181833899.svg)](https://zenodo.org/badge/latestdoi/181833899)
