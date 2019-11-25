@@ -16,6 +16,27 @@ PostGIS Database.
 Postgresql with PostGIS should be installed. 
 `psql` should be in your path (windows users: You may need to add C:\Program Files\PostgreSQL\9.6\bin (or whatever directory you installed Postgresql to) to your Windows PATH). 
 
+## Quick Note on PostgreSQL environment
+When you connect to the database you must provide `username`, `password` `hostname`, `port`, and `database`. For 
+command line programs these will be set to defaults if not provided. These are the defaults for `psql`:
+- username: whatever you're currently logged in as (i.e., your windows/mac/linux username)
+- password: you can create a default password by adding an environment variable PGPASSWORD
+- hostname: localhost
+- port: 5432
+- database: same as your username
+
+These can be overriden in psql by adding command line switches:
+
+`psql -U $USERNAME -h $HOST -p $PASSWORD -d $DATABASE`
+
+Note that password cannot be added as a command line argument in this case. If you want to save your password so you're not prompted every time, run this before you run `psql` or add the variables permanently to your environment through the control panel or shell profile:
+
+Windows users:
+```SET PGPASSWORD='your_password_here'```
+
+Linux users:
+```export PGPASSWORD='your_password_here'```
+
 ### OpenStreetMap Data Model
 Read about the OSM Data Model at [https://labs.mapbox.com/mapping/osm-data-model/](https://labs.mapbox.com/mapping/osm-data-model/). OSM Treats the world as vectors, specifically using the terminology `nodes`, `ways`, and `relations`. It does not 
 map perfectly to the `points`, `lines`, and `polygons` models that you are used to. The model is also somewhat loosely defined and classes of entities such as roads are separated logically into different groups. Instead, they are represented by special attributes. Translating these entities to spatial layers requires a bit of work.
@@ -33,7 +54,7 @@ This is `EPSG:4326`.
 ### Create an `arizona` database
 Create a database for the OSM Data. You can do this through pgadmin but to make things more deterministic, type the following in a command window:
 
-```psql -d arizona -c "create database arizona"```
+```psql -U postgres -d arizona -c "create database arizona"```
 
 You will be prompted for your password each time. To avoid being asked repeatedly, type the following command to store
 your password in your local shell environment, replacing `postgres` with the password you selected (if you did) for your
@@ -48,7 +69,7 @@ need to re-issue the above command if you want to avoid being asked for the pass
 
 Next, enable the `PostGIS` extension:
 
-```psql -d arizona -c "create extension postgis"```
+```psql  -U postgres -d arizona -c "create extension postgis"```
 
 
 ### Extract the OSM data and load it into postgresql
@@ -68,7 +89,7 @@ shp2pgsql -s 4326 gis_osm_places_free_1 > gis_osm_places_free_1.sql
 This creates a SQL file that you can use to load the data into postgresql. Loading data via the command line is pretty simple:
 
 ```
-psql -d arizona -h localhost -U postgres -f gis_osm_places_free_1.sql
+psql -U postgres -d arizona -h localhost -U postgres -f gis_osm_places_free_1.sql
 ```
 A successful run will result in a large number of lines with nothing else but 
 ```
@@ -92,7 +113,7 @@ Use it with psql to run it from the command line:
 
 
 ```
-psql -d arizona -h localhost -U postgres -c "ALTER TABLE gis_osm_buildings_a_free_1 RENAME TO buildings;
+psql -U postgres -d arizona -h localhost -c "ALTER TABLE gis_osm_buildings_a_free_1 RENAME TO buildings;
 ```
 
 
