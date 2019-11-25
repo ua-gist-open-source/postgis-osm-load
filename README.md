@@ -1,24 +1,22 @@
-# Assignment: PostGIS II - OSM Data Load - PostGIS
-## Worth: 60 points
-## Due: Saturday, April 27, 11:59pm
+# Assignment: PostGIS - OSM Data Load
+## Worth: 50 points
 
 ## Background
 _[OpenStreetMap](https://www.openstreetmap.org) (aka OSM) is a map of the world, created by people like you and free to use under an open license._ In this lab you are going to download the OSM data for the state of Arizona and load it into a
 PostGIS Database. 
 
+## Deliverables
+- A file named `import.cmd` (or `import.sh` for linuz/osx users) in a `osm` branch with a Pull Request to merge with master.
+- A screenshot of QGIS showing the OSM layers loaded from PostGIS, zoomed into Tucson.
+
+`import.cmd` (or `import.sh` for linux/mac users) should contain all commands used to import the data into PostgreSQL. In practice, this file would be a functioning shell script that could be re-used to perform the full data import from the  unzipped shapefile to having fully populated tables in PostgreSQL.
+
+## Prerequisites
+Postgresql with PostGIS should be installed. 
+
 ### OpenStreetMap Data Model
 Read about the OSM Data Model at [https://labs.mapbox.com/mapping/osm-data-model/](https://labs.mapbox.com/mapping/osm-data-model/). OSM Treats the world as vectors, specifically using the terminology `nodes`, `ways`, and `relations`. It does not 
 map perfectly to the `points`, `lines`, and `polygons` models that you are used to. The model is also somewhat loosely defined and classes of entities such as roads are separated logically into different groups. Instead, they are represented by special attributes. Translating these entities to spatial layers requires a bit of work.
-
-## Assignment
-Deliverables: 
-
-1) A file named `import.cmd` in a `osm` branch with a Pull Request to merge with master.
-2) A screenshot of QGIS showing the OSM layers loaded from PostGIS, zoomed into Tucson.
-
-`import.cmd` should contain all commands used to import the data into PostgreSQL. In practice,
-this file would be a functioning shell script that could be re-used to perform the full data import from the 
-unzipped shapefile to having fully populated tables in PostgreSQL.
 
 ### Download OpenStreetMap Arizona data
 
@@ -57,7 +55,9 @@ The command to load this data into PostGIS is called `shp2psql`. It should alrea
 you will provide the name of a shapefile. By default the output will be printed to your screen (aka `STDOUT`)
 but you want to redirect the output to a file. 
 
-Open a Unix shell or DOS command window and navigate to the directory where you unzipped the arizona 
+**Note: This section can be handled using the GUI Shapefile Importer used in the NYC PostGIS Tutorial**
+
+Open a Unix shell or DOS command window and navigate to the directory where you unzipped the arizona
 
 ```
 shp2pgsql -s 4326 gis_osm_places_free_1 > gis_osm_places_free_1.sql
