@@ -6,13 +6,15 @@ _[OpenStreetMap](https://www.openstreetmap.org) (aka OSM) is a map of the world,
 PostGIS Database. 
 
 ## Deliverables
-- A file named `import.cmd` (or `import.sh` for linuz/osx users) in a `osm` branch with a Pull Request to merge with master.
-- A screenshot of QGIS showing the OSM layers loaded from PostGIS, zoomed into Tucson.
+`osm`
+- `import.cmd` (or `import.sh` for linuz/osx users) in a `osm` branch with a Pull Request to merge with master.
+- `osm_qgis_screenshot.png` - A screenshot of QGIS showing the OSM layers loaded from PostGIS, zoomed into Tucson.
 
 `import.cmd` (or `import.sh` for linux/mac users) should contain all commands used to import the data into PostgreSQL. In practice, this file would be a functioning shell script that could be re-used to perform the full data import from the  unzipped shapefile to having fully populated tables in PostgreSQL.
 
 ## Prerequisites
 Postgresql with PostGIS should be installed. 
+`psql` should be in your path (windows users: You may need to add C:\Program Files\PostgreSQL\9.6\bin (or whatever directory you installed Postgresql to) to your Windows PATH). 
 
 ### OpenStreetMap Data Model
 Read about the OSM Data Model at [https://labs.mapbox.com/mapping/osm-data-model/](https://labs.mapbox.com/mapping/osm-data-model/). OSM Treats the world as vectors, specifically using the terminology `nodes`, `ways`, and `relations`. It does not 
