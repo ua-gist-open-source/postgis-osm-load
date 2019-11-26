@@ -89,7 +89,7 @@ shp2pgsql -s 4326 gis_osm_places_free_1 > gis_osm_places_free_1.sql
 This creates a SQL file that you can use to load the data into postgresql. Loading data via the command line is pretty simple:
 
 ```
-psql -U postgres -d arizona -h localhost -U postgres -f gis_osm_places_free_1.sql
+psql -U postgres -d arizona -h localhost -f gis_osm_places_free_1.sql
 ```
 A successful run will result in a large number of lines with nothing else but 
 ```
