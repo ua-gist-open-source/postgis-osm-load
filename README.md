@@ -54,7 +54,7 @@ This is `EPSG:4326`.
 ### Create an `arizona` database
 Create a database for the OSM Data. You can do this through pgadmin but to make things more deterministic, type the following in a command window:
 
-```psql -U postgres -d arizona -c "create database arizona"```
+```psql -U postgres -c "create database arizona"```
 
 You will be prompted for your password each time. To avoid being asked repeatedly, type the following command to store
 your password in your local shell environment, replacing `postgres` with the password you selected (if you did) for your
