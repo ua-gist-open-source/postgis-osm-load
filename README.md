@@ -27,7 +27,7 @@ command line programs these will be set to defaults if not provided. These are t
 
 These can be overriden in psql by adding command line switches:
 
-`psql -U $USERNAME -h $HOST -p $PASSWORD -d $DATABASE`
+`psql -U $USERNAME -h $HOST -p $PORT -d $DATABASE`
 
 Note that password cannot be added as a command line argument in this case. If you want to save your password so you're not prompted every time, run this before you run `psql` or add the variables permanently to your environment through the control panel or shell profile:
 
