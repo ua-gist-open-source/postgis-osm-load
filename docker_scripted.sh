@@ -4,10 +4,11 @@ STATE=hawaii
 DATABASE=hawaii
 OUT_DIR=$HOME/Downloads
 
-curl http://download.geofabrik.de/north-america/us/${STATE}-latest-free.shp.zip -o ${STATE}-latest-free.shp.zip
+curl http://download.geofabrik.de/north-america/us/${STATE}-latest-free.shp.zip -o $OUT_DIR/${STATE}-latest-free.shp.zip
 
 # Unzip
-unzip ${STATE}-latest-free.shp.zip
+mkdir ${STATE}-latest-free.shp
+unzip $OUT_DIR/${STATE}-latest-free.shp.zip -d ${STATE}-latest-free.shp
 
 x=$(ls $OUT_DIR/${STATE}-latest-free.shp/*.shp | cut -f6 -d/ | sed 's/gis_osm_//' | sed 's/_free_1.shp//' | awk '{ print "gis_osm_" $1 "_free_1.shp:" $1 }')
 for ft in $x; do
