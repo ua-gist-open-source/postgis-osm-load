@@ -4,6 +4,7 @@
 ## Background
 _[OpenStreetMap](https://www.openstreetmap.org) (aka OSM) is a map of the world, created by people like you and free to use under an open license._ In this lab you are going to download the OSM data for the state of Arizona and load it into a
 PostGIS Database. 
+- Nov 2020 article noting recent heavy corporate investment in OSM [link](https://joemorrison.medium.com/openstreetmap-is-having-a-moment-dcc7eef1bb01)
 
 ## Deliverables
 `osm`
