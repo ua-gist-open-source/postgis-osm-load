@@ -74,35 +74,42 @@ We are going to utilize the same postgis container, since it contains the `shp2p
 - `$POSTGRES_PORT_5432_TCP_PORT` is the port that is exposed on that container corresponding to the internal 5432 port.
 
 Running it through docker requires a little extra cruft to make it run. That extra docker stuff is at the beginning:
-```docker run --link postgis:postgres --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data mdillon/postgis sh -c '....'``` 
+```docker run --link postgis:postgres --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data --entrypoint sh  mdillon/postgis -c '....'``` 
 Then the part after -`c` inside the single quotes is the actual command that will be run inside that container, which is essentially: `shp2pgsql | psql` which extracts the shapefile into SQL and then inserts it into the database.
 ```
-docker run --link postgis:postgres --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data mdillon/postgis sh -c 'shp2pgsql -s 4326 -c -g geom /data/gis_osm_waterways_free_1.shp public.waterways | psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -d hawaii'
+docker run --link postgis:postgres --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data  --entrypoint sh mdillon/postgis -c 'shp2pgsql -s 4326 -c -g geom /data/gis_osm_waterways_free_1.shp public.waterways | psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -d hawaii'
 ```
 A successful run will result in a large number of lines with nothing else but 
 ```
 INSERT 0 1
 ```
 
-The above two commands will create and populate a table for `waterways` based on OSM data. You can check on the data in pgAdmin. If it looks good, do the same for the rest of the shapefiles in that directory.
+The above two commands will create and populate a table for `waterways` based on OSM data. Note this appears in two places in the command: 
+- `gis_osm_waterways_free_1.shp` which is the name of the shapefile. You'll have to match each of the shapefiles that you extracted in the zip. 
+- `public.waterways` which is the target table for this data. You can name that whatevery you want but it would best to be simple but also get rid of the extra `gis_osm_` prefix and `_free_1` suffix. Note that the word `natural` is a keyword in postgres so you cannot choose that name as an output table name.
 
-Repeat the steps for the additional data files. Refresh your pgadmin table list to see that the tables were created. It can take a few minutes for the larger tables but should not take longer than 15 minutes total.
+You can check on the data in pgAdmin. If it looks good, do the same for the rest of the shapefiles in that directory.
 
-### Rename the tables
-The names are pretty obnoxious since they all start with the same 8 characters. To change a table name in SQL: 
-
-
+Repeat the steps for the additional data files. Refresh your pgadmin table list to see that the tables were created. It can take a few minutes for the larger tables but should not take longer than 15 minutes total. I encourage choosing the following renaming conventions:
 ```
-ALTER TABLE my_table RENAME TO new_name;
-```
-Again, to have this run through docker:
-
-```
-psql -U postgres -d hawaii -h localhost -c "ALTER TABLE gis_osm_waterways_a_free_1 RENAME TO waterways";
-```
-However, with a little extra due to accessing `psql` through docker it will look like this:
-```
-docker run --link postgis:postgres --entrypoint sh mdillon/postgis -c 'psql -U postgres -d hawaii -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -c "ALTER TABLE gis_osm_waterways_a_free_1 RENAME TO waterways;"'
+gis_osm_buildings_a_free_1.shp -> buildings_a
+gis_osm_landuse_a_free_1.shp -> landuse_a
+gis_osm_natural_a_free_1.shp -> nature_a
+gis_osm_natural_free_1.shp -> nature
+gis_osm_places_a_free_1.shp -> places_a
+gis_osm_places_free_1.shp -> places
+gis_osm_pofw_a_free_1.shp -> pofw_a
+gis_osm_pofw_free_1.shp -> pofw
+gis_osm_pois_a_free_1.shp -> pois_a
+gis_osm_pois_free_1.shp -> pois
+gis_osm_railways_free_1.shp -> railways
+gis_osm_roads_free_1.shp -> roads
+gis_osm_traffic_a_free_1.shp -> traffic_a
+gis_osm_traffic_free_1.shp -> traffic
+gis_osm_transport_a_free_1.shp -> transport_a
+gis_osm_transport_free_1.shp -> transport
+gis_osm_water_a_free_1.shp -> water_a
+gis_osm_waterways_free_1.shp -> waterways
 ```
 
 Do this for all the OSM layers. Tables containing `_a_` in them refer to polygons; hence some feature classes are 
@@ -119,7 +126,6 @@ The following two files in a branch named `osm`, submitted as a Pull Request to 
 1) File named `import.cmd` containing:
 - all commands used to extract shapefile data into sql files (i.e. those , `shp2pgsql...`)
 - all commands used to import sql files into postgresql (i.e., `psql...`)
-- all commands used to rename tables (i.e., `psql.... ALTER TABLE...`)
 2) Screenshot named `osm_qgis_screenshot.png` showing all OSM PostGIS tables visible in QGIS, zoomed into Tucson
 
 [![DOI](https://zenodo.org/badge/181833899.svg)](https://zenodo.org/badge/latestdoi/181833899)
