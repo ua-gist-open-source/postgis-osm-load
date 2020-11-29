@@ -2,7 +2,7 @@
 ## Worth: 50 points
 
 ## Background
-_[OpenStreetMap](https://www.openstreetmap.org) (aka OSM) is a map of the world, created by people like you and free to use under an open license._ In this lab you are going to download the OSM data for the state of Arizona and load it into a
+_[OpenStreetMap](https://www.openstreetmap.org) (aka OSM) is a map of the world, created by people like you and free to use under an open license._ In this lab you are going to download the OSM data for the state of Hawaii and load it into a
 PostGIS Database. 
 - Nov 2020 article noting recent heavy corporate investment in OSM [link](https://joemorrison.medium.com/openstreetmap-is-having-a-moment-dcc7eef1bb01)
 
@@ -37,7 +37,7 @@ These can be overriden in psql by adding command line switches:
 Read about the OSM Data Model at [https://labs.mapbox.com/mapping/osm-data-model/](https://labs.mapbox.com/mapping/osm-data-model/). OSM Treats the world as vectors, specifically using the terminology `nodes`, `ways`, and `relations`. It does not 
 map perfectly to the `points`, `lines`, and `polygons` models that you are used to. The model is also somewhat loosely defined and classes of entities such as roads are separated logically into different groups. Instead, they are represented by special attributes. Translating these entities to spatial layers requires a bit of work.
 
-### Download OpenStreetMap Arizona data
+### Download OpenStreetMap Hawaii data
 
 Download the Hawaii _shapefile_ (not the pbf file) for OpenStreetMap from [http://download.geofabrik.de/north-america/us/hawaii.html](http://download.geofabrik.de/north-america/us/hawaii.html). It will be named `hawaii-latest-free.shp.zip`.
 
@@ -47,14 +47,14 @@ Unzip and take note of the projection:
 
 This is `EPSG:4326`.
 
-### Create an `arizona` database
+### Create a `hawaii` database
 Create a database for the OSM Data. You can do this through pgadmin but to make things more deterministic, type the following in a command window. Note that most of the following command is cruft required to pass the command to the server. The relevant SQL is simply `CREATE DATABASE hawaii`:
 
 ```
 docker run --link postgis:postgres --entrypoint sh mdillon/postgis -c 'psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -c "CREATE DATABASE hawaii"'
 ```
 
-Next, enable the `PostGIS` extension. The command is simply `CREATE EXTENSION postgis` but you pass `-d arizona` to make it happen in that new database. Submit it like:
+Next, enable the `PostGIS` extension. The command is simply `CREATE EXTENSION postgis` but you pass `-d hawaii` to make it happen in that new database. Submit it like:
 
 ```
 docker run --link postgis:postgres --rm --entrypoint sh mdillon/postgis -c 'psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -d hawaii -c "CREATE EXTENSION postgis"'
