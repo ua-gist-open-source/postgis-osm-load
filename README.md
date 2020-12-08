@@ -16,7 +16,7 @@ PostGIS Database.
 ## Prerequisites
 Postgres with PostGIS is running. For this assignment we are running it in a docker container like we set up in a previous assignment:
 ```
-docker run --name postgis -d -v $HOME/postgres_data:/var/lib/postgresql -p 25432:5432 mdillon/postgis
+docker run --name postgis -d -v $HOME/postgres_data/data:/var/lib/postgresql/data -p 25432:5432 mdillon/postgis
 ```
 Note that if you still have a database running from before, you will get an error about the port being used. If the database is still running, you should be able to disregard this error. 
 
