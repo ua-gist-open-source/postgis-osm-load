@@ -1,5 +1,4 @@
 # Assignment: PostGIS - OSM Data Load
-## Worth: 50 points
 
 ## Background
 _[OpenStreetMap](https://www.openstreetmap.org) (aka OSM) is a map of the world, created by people like you and free to use under an open license._ In this lab you are going to download the OSM data for the state of Hawaii and load it into a
@@ -14,11 +13,9 @@ PostGIS Database.
 `import.cmd` (or `import.sh` for linux/mac users) should contain all commands used to import the data into PostgreSQL. In practice, this file would be a functioning shell script that could be re-used to perform the full data import from the  unzipped shapefile to having fully populated tables in PostgreSQL.
 
 ## Prerequisites
-Postgres with PostGIS is running. For this assignment we are running it in a docker container like we set up in a previous assignment:
-```
-docker run --name postgis -d -v $HOME/postgres_data/data:/var/lib/postgresql/data -p 25432:5432 mdillon/postgis
-```
-Note that if you still have a database running from before, you will get an error about the port being used. If the database is still running, you should be able to disregard this error. 
+- Docker is installed
+- `gist604b` docker network was created like `docker create network gist604b`
+- `postgis` container is running on the `gist604b` network and has a local directory mounted.
 
 ## Quick Note on PostgreSQL environment
 When you connect to the database you must provide `username`, `password` `hostname`, `port`, and `database`. For 
@@ -51,13 +48,13 @@ This is `EPSG:4326`.
 Create a database for the OSM Data. You can do this through pgadmin but to make things more deterministic, type the following in a command window. Note that most of the following command is cruft required to pass the command to the server. The relevant SQL is simply `CREATE DATABASE hawaii`:
 
 ```
-docker run --link postgis:postgres --entrypoint sh mdillon/postgis -c 'psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -c "CREATE DATABASE hawaii"'
+docker run --network gist604b --entrypoint sh mdillon/postgis -c 'psql -h postgis -U postgres -c "CREATE DATABASE hawaii"'
 ```
 
 Next, enable the `PostGIS` extension. The command is simply `CREATE EXTENSION postgis` but you pass `-d hawaii` to make it happen in that new database. Submit it like:
 
 ```
-docker run --link postgis:postgres --rm --entrypoint sh mdillon/postgis -c 'psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -d hawaii -c "CREATE EXTENSION postgis"'
+docker run --network gist604b  --rm --entrypoint sh mdillon/postgis -c 'psql -h postgis -U postgres -d hawaii -c "CREATE EXTENSION postgis"'
 ```
 
 
@@ -69,16 +66,14 @@ you will provide the name of a shapefile. By default the output will be printed 
 **Note: This section can be handled using the GUI Shapefile Importer used in the NYC PostGIS Tutorial**
 
 We are going to utilize the same postgis container, since it contains the `shp2pgsql` program. However, when we run it, it will be a _second_ container and it will need to know how to connect to the first container. Docker allows running containers to know about each other by _linking_ them. When they are linked, the exposed parts of the container will be accessible through _environment variables_. In the command below, pay special attention to:
-- `--link postgis:postgres` -- this tells this container to link with the `postgis` named container (remember we gave it `--name postgis` before)
+- `-h postgis` -- this tells this container to run on the docker `gist604b` network alongside the `postgis` named container (remember we gave it `--name postgis` before)
 - `-v $HOME/Downloads/hawaii-latest-free.shp:/data` -- this is volume sharing and may differ for you, depending where you extracted the `hawaii-latest-free.shp.zip` file to.
-- `$POSTGRES_PORT_5432_TCP_ADDR` is the internal network address of the postgis container (inside docker's own private network)
-- `$POSTGRES_PORT_5432_TCP_PORT` is the port that is exposed on that container corresponding to the internal 5432 port.
 
 Running it through docker requires a little extra cruft to make it run. That extra docker stuff is at the beginning:
-```docker run --link postgis:postgres --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data --entrypoint sh  mdillon/postgis -c '....'``` 
+```docker run --network gist604b --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data --entrypoint sh  mdillon/postgis -c '....'``` 
 Then the part after -`c` inside the single quotes is the actual command that will be run inside that container, which is essentially: `shp2pgsql | psql` which extracts the shapefile into SQL and then inserts it into the database.
 ```
-docker run --link postgis:postgres --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data  --entrypoint sh mdillon/postgis -c 'shp2pgsql -s 4326 -c -g geom /data/gis_osm_waterways_free_1.shp public.waterways | psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p $POSTGRES_PORT_5432_TCP_PORT -U postgres -d hawaii'
+docker run --network gist604b --rm -v $HOME/Downloads/hawaii-latest-free.shp:/data  --entrypoint sh mdillon/postgis -c 'shp2pgsql -s 4326 -c -g geom /data/gis_osm_waterways_free_1.shp public.waterways | psql -h postgis -U postgres -d hawaii'
 ```
 A successful run will result in a large number of lines with nothing else but 
 ```
@@ -119,7 +114,21 @@ represented both as points (e.g., `places`) and polygons (e.g., `places_a`).
 *Note: `natural` is a postgresql reserved word do rename `gis_osm_natural_free_1` to `nature`*
 
 ### Open PostGIS Tables as Layers in QGIS
-Open GGIS and select the `Layer` -> `Add PostGIS Layers` option. 
+CIn QGIS reate a new postgis connection with:
+![screenshot_qgis_new_postgis_connection.png](screenshot_qgis_new_postgis_connection.png)
+
+Then:
+![screenshot_qgis_postgis_connection_details.png](screenshot_qgis_postgis_connection_details.png)
+
+Once you have the `localhost:25432` PostGIS Connection, Add all the layers:
+
+Select the `Layer` -> `Add PostGIS Layers` option. 
+![screenshot_qgis_add_layer_postgis.png](screenshot_qgis_add_layer_postgis.png)
+
+Select `localhost:25432` and click `Connect`. It is important that you click `Connect` or else you won't see any of your tables.
+
+![screenshot_qgis_add_layer_connect.png](screenshot_qgis_add_layer_connect.png)
+
 Open all the OSM Hawaii layers. Take a screenshot and save it to your github `osm` branch with the name `osm_qgis_screenshot.png`
 
 ### Deliverables:
