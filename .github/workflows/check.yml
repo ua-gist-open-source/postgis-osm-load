@@ -1,0 +1,47 @@
+name: Check for required files
+
+on:
+  push:
+    branches: [ assignment ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check Screenshot
+        id: check_1_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "screencap-island-area.png"
+
+      - name: Required files exist
+        if: steps.check_1_files.outputs.files_exists != 'true'
+        run: |
+          echo Required file, 'screencap-island-area.png', is missing
+          exit 1
+          
+      - name: Check Screenshot
+        id: check_2_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "screencap_road_length.png"
+
+      - name: Required files exist
+        if: steps.check_2_files.outputs.files_exists != 'true'
+        run: |
+          echo Required file, 'screencap_road_length.png', is missing
+          exit 1
+          
+      - name: Check Script
+        id: check_script
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "import.sh"
+
+      - name: Required script exist
+        if: steps.check_script.outputs.files_exists != 'true'
+        run: |
+          echo Required file, 'import.sh', is missing
+          exit 1
